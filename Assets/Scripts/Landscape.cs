@@ -9,7 +9,7 @@ public class Landscape : MonoBehaviour
     [SerializeField] private int _startSegmentsCount = 3;
     [SerializeField] private float _distanceToCameraToDestroy;
 
-    [SerializeField] private List<GameObject> _segments;
+    private List<GameObject> _segments;
     private Transform _mainCameraTransform;
     private float _mainCameraPositionX;
     private float _lastSegmentPositionX;
@@ -24,9 +24,10 @@ public class Landscape : MonoBehaviour
         var initialSegment = SpawnSegment(_segmentPrefabs[0], Vector3.zero);
         _segments.Add(initialSegment);
 
-        var halfSegmentsCount = Mathf.FloorToInt(_startSegmentsCount / 2);
+        var halfSegmentsCount = (int)Mathf.Floor(_startSegmentsCount / 2);
+
         // From -maxCount + 1 (initial segment already spawned) to maxCount
-        for (int i = -halfSegmentsCount + 1, index = 0; i <= halfSegmentsCount; i++, index++)
+        for (int i = -halfSegmentsCount, index = 0; i < halfSegmentsCount; i++, index++)
         {
             var randomPrefab = GetRandomPrefab();
             var newSegment = SpawnSegmentNextTo(randomPrefab, _segments[index]);
