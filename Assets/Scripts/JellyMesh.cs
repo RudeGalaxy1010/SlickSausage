@@ -1,11 +1,14 @@
 using UnityEngine;
 
+// This code from here: https://youtu.be/Kwh4TkQqqf8
+
 public class JellyMesh : MonoBehaviour
 {
     [SerializeField] private float _intensity = 1f;
     [SerializeField] private float _mass = 1f;
     [SerializeField] private float _stiffness = 1f;
     [SerializeField] private float _damping = 0.75f;
+
     private Mesh _originalMesh, _cloneMesh;
     private MeshRenderer _meshRenderer;
     private JellyVertex[] _jellyVertexes;
@@ -19,6 +22,7 @@ public class JellyMesh : MonoBehaviour
         GetComponent<MeshFilter>().sharedMesh = _cloneMesh;
         _meshRenderer = GetComponent<MeshRenderer>();
         _jellyVertexes = new JellyVertex[_cloneMesh.vertices.Length];
+
         for (int i = 0; i < _jellyVertexes.Length; i++)
         {
             _jellyVertexes[i] = new JellyVertex(i, transform.TransformPoint(_cloneMesh.vertices[i]));
@@ -28,6 +32,7 @@ public class JellyMesh : MonoBehaviour
     private void FixedUpdate()
     {
         _vertexArray = _originalMesh.vertices;
+
         for (int i = 0; i < _jellyVertexes.Length; i++)
         {
             Vector3 target = transform.TransformPoint(_vertexArray[_jellyVertexes[i].Id]);
@@ -58,6 +63,7 @@ public class JellyVertex
         Force = (target - Position) * stiffness;
         Velocity = (Velocity + Force / mass) * damping;
         Position += Velocity;
+
         if ((Velocity + Force * (1 + 1 / mass)).magnitude < 0.001f)
         {
             Position = target;

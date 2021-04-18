@@ -1,6 +1,7 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
+
+// Used to generate new and remove old segments according to main camera position
 
 public class Landscape : MonoBehaviour
 {
@@ -15,7 +16,7 @@ public class Landscape : MonoBehaviour
     private float _lastSegmentPositionX;
 
     // Initialize segments, fill the list from the end
-    private void Start()
+    private void Awake()
     {
         _mainCameraTransform = Camera.main.transform;
         _segments = new List<GameObject>(_startSegmentsCount);
@@ -23,17 +24,18 @@ public class Landscape : MonoBehaviour
         // Spawn initial segment
         var initialSegment = SpawnSegment(_segmentPrefabs[0], Vector3.zero);
         _segments.Add(initialSegment);
+        _lastSegmentPositionX = 0;
 
         var halfSegmentsCount = (int)Mathf.Floor(_startSegmentsCount / 2);
 
-        // From -maxCount + 1 (initial segment already spawned) to maxCount
-        for (int i = -halfSegmentsCount, index = 0; i < halfSegmentsCount; i++, index++)
+        // From -maxCount [Inclusive] to maxCount [Exclusive] - initial segment already spawned
+        for (int i = -halfSegmentsCount, lastSegmentIndex = 0; i < halfSegmentsCount; i++, lastSegmentIndex++)
         {
             var randomPrefab = GetRandomPrefab();
-            var newSegment = SpawnSegmentNextTo(randomPrefab, _segments[index]);
+            var lastSegment = _segments[lastSegmentIndex];
+            var newSegment = SpawnSegmentNextTo(randomPrefab, lastSegment);
             _segments.Add(newSegment);
         }
-        _lastSegmentPositionX = _segments[0].transform.position.x;
     }
 
     private void Update()
@@ -43,13 +45,11 @@ public class Landscape : MonoBehaviour
         // Check if segment need to be destroyed
         if (_mainCameraPositionX - _lastSegmentPositionX > _distanceToCameraToDestroy)
         {
-            // Destroy segment
-            var segmentToDestroy = _segments[0];
-            _segments.Remove(segmentToDestroy);
-            Destroy(segmentToDestroy);
+            DestroySegment(_segments[0]);
 
             // Spawn new segment
-            var newSegment = SpawnSegmentNextTo(GetRandomPrefab(), _segments.Last());
+            var lastSegment = _segments[_segments.Count - 1];
+            var newSegment = SpawnSegmentNextTo(GetRandomPrefab(), lastSegment);
             _segments.Add(newSegment);
 
             _lastSegmentPositionX = _segments[0].transform.position.x;
@@ -67,6 +67,12 @@ public class Landscape : MonoBehaviour
     {
         var newSegment = Instantiate(segmentPrefab, position, Quaternion.identity, transform);
         return newSegment;
+    }
+
+    private void DestroySegment(GameObject segment)
+    {
+        _segments.Remove(segment);
+        Destroy(segment);
     }
 
     private GameObject GetRandomPrefab()

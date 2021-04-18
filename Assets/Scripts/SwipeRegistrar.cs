@@ -1,25 +1,34 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
 
-public class SwipeRegistrar : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler
+// Used to read user input
+
+public class SwipeRegistrar : MonoBehaviour
 {
-    [SerializeField] private Sausage _sausage;
-    [SerializeField] private Vector2 _delta;
+    [SerializeField] private SausageMover _sausage;
+    [SerializeField] private float _maxDelta = 100f;
 
-    public void OnBeginDrag(PointerEventData eventData)
+    private Vector3 _startPosition, _endPosition, _delta;
+
+    private void Update()
     {
-        // Don't touch
-        _delta = eventData.delta;
+        if (Input.GetMouseButtonDown(0))
+        {
+            _startPosition = Camera.main.ScreenToViewportPoint(Input.mousePosition);
+        }
+        else if (Input.GetMouseButton(0))
+        {
+            _endPosition = Camera.main.ScreenToViewportPoint(Input.mousePosition);
+            _delta = _startPosition - _endPosition;
+            UpdateSausageDirection(_delta);
+        }
+        if (Input.GetMouseButtonUp(0))
+        {
+            UpdateSausageDirection(_delta);
+        }
     }
 
-    public void OnDrag(PointerEventData eventData)
+    private void UpdateSausageDirection(Vector3 delta)
     {
-        _sausage.UpdateDirection(_delta);
-    }
-
-    public void OnEndDrag(PointerEventData eventData)
-    {
-        _delta = eventData.delta - _delta;
-        _sausage.UpdateDirection(_delta);
+        _sausage.UpdateDirection(new Vector3(delta.x % _maxDelta, delta.y % _maxDelta, 0));
     }
 }
