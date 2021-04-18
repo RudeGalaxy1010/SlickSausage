@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class TargetFollower : MonoBehaviour
@@ -8,7 +6,7 @@ public class TargetFollower : MonoBehaviour
     [SerializeField] private Transform _targetToFollow;
 
     private Vector3 _offset;
-    private Vector3 _target;
+    private Vector3 _targetPosition;
 
     private void Start()
     {
@@ -19,8 +17,9 @@ public class TargetFollower : MonoBehaviour
     {
         if (transform.position != _targetToFollow.position)
         {
-            _target = new Vector3(_targetToFollow.position.x, 0, 0) + _offset;
-            transform.position = Vector3.MoveTowards(transform.position, _target, _speed * Time.deltaTime);
+            _targetPosition = new Vector3(_targetToFollow.position.x, 0, 0) + _offset;
+            var smoothTargetPosition = Vector3.MoveTowards(transform.position, _targetPosition, 0.05f);
+            transform.position = smoothTargetPosition;
         }
     }
 }
