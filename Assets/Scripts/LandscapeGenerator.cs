@@ -3,7 +3,7 @@ using UnityEngine;
 
 // Used to generate new and remove old segments according to main camera position
 
-public class Landscape : MonoBehaviour
+public class LandscapeGenerator : MonoBehaviour
 {
     [SerializeField] private List<GameObject> _segmentPrefabs = new List<GameObject>();
     [SerializeField] private float _segmentLenght = 7;

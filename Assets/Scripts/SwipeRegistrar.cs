@@ -8,16 +8,22 @@ public class SwipeRegistrar : MonoBehaviour
     [SerializeField] private float _maxDelta = 100f;
 
     private Vector3 _startPosition, _endPosition, _delta;
+    private Camera _mainCamera;
+
+    private void Awake()
+    {
+        _mainCamera = Camera.main;
+    }
 
     private void Update()
     {
         if (Input.GetMouseButtonDown(0))
         {
-            _startPosition = Camera.main.ScreenToViewportPoint(Input.mousePosition);
+            _startPosition = _mainCamera.ScreenToViewportPoint(Input.mousePosition);
         }
         else if (Input.GetMouseButton(0))
         {
-            _endPosition = Camera.main.ScreenToViewportPoint(Input.mousePosition);
+            _endPosition = _mainCamera.ScreenToViewportPoint(Input.mousePosition);
             _delta = _startPosition - _endPosition;
             UpdateSausageDirection(_delta);
         }

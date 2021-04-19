@@ -1,6 +1,7 @@
 using UnityEngine;
 
 // Used to draw direction in which sausage will jump
+
 public class LineDrawer : MonoBehaviour
 {
     [SerializeField] private LineRenderer _lineRenderer;

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-// This code from here: https://youtu.be/Kwh4TkQqqf8
+// This code was here: https://youtu.be/Kwh4TkQqqf8
 
 public class JellyMesh : MonoBehaviour
 {

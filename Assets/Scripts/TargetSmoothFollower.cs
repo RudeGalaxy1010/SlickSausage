@@ -6,6 +6,7 @@ using UnityEngine;
 public class TargetSmoothFollower : MonoBehaviour
 {
     [SerializeField] private float _speed;
+    [SerializeField] private float _smoothDelta = 0.05f;
     [SerializeField] private Transform _target;
 
     private Vector3 _offset;
@@ -21,7 +22,7 @@ public class TargetSmoothFollower : MonoBehaviour
         if (transform.position != _target.position)
         {
             _targetPosition = new Vector3(_target.position.x, 0, 0) + _offset;
-            transform.position = Vector3.MoveTowards(transform.position, _targetPosition, 0.05f);
+            transform.position = Vector3.MoveTowards(transform.position, _targetPosition, _smoothDelta);
         }
     }
 }
